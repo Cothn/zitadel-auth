@@ -23,7 +23,7 @@ public class AuthController {
     }
 
     @GetMapping(value = "/auth")
-    public RedirectView auth( RedirectAttributes attributes) {
+    public RedirectView auth(RedirectAttributes attributes) {
         String ssoAuthPage = authService.getAuthPageUrl();
 
         attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
@@ -32,6 +32,16 @@ public class AuthController {
     }
 
     @GetMapping(value = "/login/oauth2")
+    public RedirectView getTokenInfo(RedirectAttributes attributes,
+                                     @RequestParam String code) {
+        String tokenRequest = authService.getTokenRequest(code);
+
+        attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
+        attributes.addAttribute("attribute", "redirectWithRedirectView");
+        return new RedirectView(tokenRequest);
+    }
+
+    @GetMapping(value = "/user/me")
     public String getUserInfo(@RequestParam String code) {
 
         return code;
