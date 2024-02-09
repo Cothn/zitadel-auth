@@ -10,7 +10,7 @@ auth:
           user-name-attribute: preferred_username
       registration:
         zitadel:
-          client-id: '253167323886714883@dc_cms'
+          client-id: '284182948725456899'
           client-authentication-method: none
           authorizationGrantType: authorization_code
           redirect-uri: 'http://localhost:18080/login/oauth2'

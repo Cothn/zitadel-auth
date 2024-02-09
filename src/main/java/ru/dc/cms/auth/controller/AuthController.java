@@ -12,6 +12,13 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.dc.cms.auth.model.UserInfo;
 import ru.dc.cms.auth.service.AuthService;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 @RestController
 public class AuthController {
 
@@ -23,7 +30,7 @@ public class AuthController {
     }
 
     @GetMapping(value = "/auth")
-    public RedirectView auth( RedirectAttributes attributes) {
+    public RedirectView auth(RedirectAttributes attributes) {
         String ssoAuthPage = authService.getAuthPageUrl();
 
         attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
@@ -32,6 +39,24 @@ public class AuthController {
     }
 
     @GetMapping(value = "/login/oauth2")
+    public String getTokenInfo(RedirectAttributes attributes,
+                                     @RequestParam(required = false) String code) throws IOException, InterruptedException, URISyntaxException {
+        String tokenRequest = authService.getTokenRequest(code);
+
+        HttpRequest request = HttpRequest.newBuilder(new URI(tokenRequest)).build();
+
+        HttpClient client = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.statusCode() );
+        System.out.println(response.body() );
+
+        return response.body();
+    }
+
+    @GetMapping(value = "/user/me")
     public String getUserInfo(@RequestParam String code) {
 
         return code;
